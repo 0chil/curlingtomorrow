@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_manual"
+        android:icon="@drawable/ic_menu_book_24px"
+        android:title="게임방법" />
+
+    <item
+        android:id="@+id/navigation_camera"
+        android:icon="@drawable/ic_photo_camera_24px"
+        android:title="점수촬영" />
+
+    <item
+        android:id="@+id/navigation_results"
+        android:icon="@drawable/ic_list_alt_24px"
+        android:title="게임결과" />
+
+</menu>

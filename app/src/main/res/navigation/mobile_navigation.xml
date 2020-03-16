@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@id/navigation_manual">
+
+    <fragment
+        android:id="@+id/navigation_manual"
+        android:name="com.gor2.curlingtomorrow.ui.manual.ManualFragment"
+        android:label="manual"
+        tools:layout="@layout/fragment_manual" >
+        <action
+            android:id="@+id/action_navigation_manual_to_navigation_camera"
+            app:destination="@id/navigation_camera" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_camera"
+        android:name="com.gor2.curlingtomorrow.ui.camera.CameraFragment"
+        android:label="camera"
+        tools:layout="@layout/fragment_camera" >
+        <action
+            android:id="@+id/action_navigation_camera_to_navigation_results"
+            app:destination="@id/navigation_results" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_results"
+        android:name="com.gor2.curlingtomorrow.ui.results.ResultsFragment"
+        android:label="results"
+        tools:layout="@layout/fragment_results" />
+</navigation>
