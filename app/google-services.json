@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "382247916887",
+    "firebase_url": "https://curlingtomorrow-d78dc.firebaseio.com",
+    "project_id": "curlingtomorrow-d78dc",
+    "storage_bucket": "curlingtomorrow-d78dc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:382247916887:android:67615bd7d87dbb525c1a12",
+        "android_client_info": {
+          "package_name": "com.gor2.curlingtomorrow"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "382247916887-5mgnea12bfl183nu3cioqgoe84aqafvl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAcI497I_Hy8T8YZ2nknEDZVVTpVNvsK3Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "382247916887-5mgnea12bfl183nu3cioqgoe84aqafvl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -5,14 +5,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ui.camera.CameraFragment">
+    tools:context=".ui.CameraActivity">
 
-    <TextView
-        android:id="@+id/text_dashboard"
+    <SurfaceView
+        android:id="@+id/preview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#FFFFFF"
-        android:textAlignment="center"
-        android:textSize="20sp" />
+        android:layout_weight="1" />
 
+    <Button
+        android:id="@+id/button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="사진 저장" />
 </LinearLayout>

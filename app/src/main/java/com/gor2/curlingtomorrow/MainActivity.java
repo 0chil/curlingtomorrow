@@ -1,33 +1,55 @@
 package com.gor2.curlingtomorrow;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.FirebaseApp;
+import com.gor2.curlingtomorrow.ui.CameraActivity;
+import com.gor2.curlingtomorrow.ui.ManualFrag;
+import com.gor2.curlingtomorrow.ui.ResultsFrag;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity{
 
+    BottomNavigationView navView;
+    Fragment manualFrag, resultsFrag;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        final FragmentManager fm = getSupportFragmentManager();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        BottomNavigationView navView = findViewById(R.id.nav_view);
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.navigation_manual, R.id.navigation_camera, R.id.navigation_results)
-                .build();
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-        NavigationUI.setupWithNavController(navView, navController);
+        navView = findViewById(R.id.nav_view);
+        navView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                int itemId = item.getItemId();
+                if(itemId == R.id.navigation_manual){
+                    fm.beginTransaction().replace(R.id.nav_host_fragment,manualFrag).commit();
+                }
+                else if(itemId == R.id.navigation_camera){
+                    MainActivity.this.startActivity(new Intent(MainActivity.this, CameraActivity.class));
+                    MainActivity.this.navView.setSelectedItemId(R.id.navigation_results);
+                    return false;
+                }
+                else if(itemId == R.id.navigation_results){
+                    fm.beginTransaction().replace(R.id.nav_host_fragment,resultsFrag).commit();
+                }
+                return true;
+            }
+        });
+
+        FirebaseApp.initializeApp(getApplicationContext());
+
+        manualFrag = new ManualFrag();
+        resultsFrag = new ResultsFrag();
+        fm.beginTransaction().replace(R.id.nav_host_fragment,manualFrag).commit();
+
         getSupportActionBar().hide();
     }
 

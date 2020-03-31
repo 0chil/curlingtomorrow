@@ -7,9 +7,9 @@
 
     <fragment
         android:id="@+id/navigation_manual"
-        android:name="com.gor2.curlingtomorrow.ui.manual.ManualFragment"
+        android:name="com.gor2.curlingtomorrow.ui.ManualFrag"
         android:label="manual"
-        tools:layout="@layout/fragment_manual" >
+        tools:layout="@layout/activity_manual" >
         <action
             android:id="@+id/action_navigation_manual_to_navigation_camera"
             app:destination="@id/navigation_camera" />
@@ -17,9 +17,9 @@
 
     <fragment
         android:id="@+id/navigation_camera"
-        android:name="com.gor2.curlingtomorrow.ui.camera.CameraFragment"
+        android:name="com.gor2.curlingtomorrow.ui.CameraActivity"
         android:label="camera"
-        tools:layout="@layout/fragment_camera" >
+        tools:layout="@layout/activity_camera" >
         <action
             android:id="@+id/action_navigation_camera_to_navigation_results"
             app:destination="@id/navigation_results" />
@@ -27,7 +27,7 @@
 
     <fragment
         android:id="@+id/navigation_results"
-        android:name="com.gor2.curlingtomorrow.ui.results.ResultsFragment"
+        android:name="com.gor2.curlingtomorrow.ui.ResultsFrag"
         android:label="results"
-        tools:layout="@layout/fragment_results" />
+        tools:layout="@layout/activity_results" />
 </navigation>
