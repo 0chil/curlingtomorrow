@@ -4,18 +4,44 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center"
     android:orientation="vertical"
+    android:paddingTop="40dp"
     tools:context=".ui.CameraActivity">
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="표적지를 가이드라인에 맞춰주세요"
+        android:textAlignment="center"
+        android:textSize="20sp" />
 
     <SurfaceView
         android:id="@+id/preview"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight="1" />
 
-    <Button
-        android:id="@+id/button"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="사진 저장" />
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:elevation="10dp"
+            android:hapticFeedbackEnabled="true"
+            android:soundEffectsEnabled="true"
+            app:backgroundTint="@color/colorPrimary"
+            app:fabCustomSize="80dp"
+            app:maxImageSize="50dp"
+            app:srcCompat="@drawable/ic_camera_black_24dp" />
+    </LinearLayout>
+
 </LinearLayout>

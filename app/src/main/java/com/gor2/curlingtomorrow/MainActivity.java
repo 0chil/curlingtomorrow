@@ -11,6 +11,7 @@ import com.gor2.curlingtomorrow.ui.ManualFrag;
 import com.gor2.curlingtomorrow.ui.ResultsFrag;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -19,6 +20,7 @@ public class MainActivity extends AppCompatActivity{
 
     BottomNavigationView navView;
     Fragment manualFrag, resultsFrag;
+    final int REQUESTCODE = 400;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         final FragmentManager fm = getSupportFragmentManager();
@@ -33,8 +35,7 @@ public class MainActivity extends AppCompatActivity{
                     fm.beginTransaction().replace(R.id.nav_host_fragment,manualFrag).commit();
                 }
                 else if(itemId == R.id.navigation_camera){
-                    MainActivity.this.startActivity(new Intent(MainActivity.this, CameraActivity.class));
-                    MainActivity.this.navView.setSelectedItemId(R.id.navigation_results);
+                    MainActivity.this.startActivityForResult(new Intent(MainActivity.this, CameraActivity.class),REQUESTCODE);
                     return false;
                 }
                 else if(itemId == R.id.navigation_results){
@@ -53,4 +54,13 @@ public class MainActivity extends AppCompatActivity{
         getSupportActionBar().hide();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == REQUESTCODE){
+            if(resultCode == RESULT_OK){
+                navView.setSelectedItemId(R.id.navigation_results);
+            }
+        }
+    }
 }

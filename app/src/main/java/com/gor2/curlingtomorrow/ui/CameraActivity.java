@@ -7,11 +7,15 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.ImageFormat;
 import android.graphics.Matrix;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
 import android.hardware.camera2.CameraCharacteristics;
@@ -23,6 +27,7 @@ import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.CaptureResult;
 import android.hardware.camera2.TotalCaptureResult;
 import android.hardware.camera2.params.StreamConfigurationMap;
+import android.media.ExifInterface;
 import android.media.Image;
 import android.media.ImageReader;
 import android.net.Uri;
@@ -35,6 +40,7 @@ import android.provider.MediaStore;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Size;
+import android.util.SparseIntArray;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -44,19 +50,42 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.ml.common.FirebaseMLException;
 import com.google.firebase.ml.custom.FirebaseCustomLocalModel;
+import com.google.firebase.ml.custom.FirebaseModelDataType;
+import com.google.firebase.ml.custom.FirebaseModelInputOutputOptions;
+import com.google.firebase.ml.custom.FirebaseModelInputs;
+import com.google.firebase.ml.custom.FirebaseModelInterpreter;
+import com.google.firebase.ml.custom.FirebaseModelInterpreterOptions;
+import com.google.firebase.ml.custom.FirebaseModelOutputs;
 import com.gor2.curlingtomorrow.R;
+import com.gor2.curlingtomorrow.camera.DeviceOrientation;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
-public class CameraActivity extends AppCompatActivity{
+public class CameraActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback{
 
     private SurfaceView mSurfaceView;
     private SurfaceHolder mSurfaceViewHolder;
@@ -65,7 +94,22 @@ public class CameraActivity extends AppCompatActivity{
     private CameraDevice mCameraDevice;
     private CaptureRequest.Builder mPreviewBuilder;
     private CameraCaptureSession mSession;
+    private int mDeviceRotation;
+    private Sensor mAccelerometer;
+    private Sensor mMagnetometer;
+    private SensorManager mSensorManager;
+    private DeviceOrientation deviceOrientation;
     int mDSI_height, mDSI_width;
+
+    private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
+    static {
+        ORIENTATIONS.append(ExifInterface.ORIENTATION_NORMAL, 0);
+        ORIENTATIONS.append(ExifInterface.ORIENTATION_ROTATE_90, 90);
+        ORIENTATIONS.append(ExifInterface.ORIENTATION_ROTATE_180, 180);
+        ORIENTATIONS.append(ExifInterface.ORIENTATION_ROTATE_270, 270);
+    }
+
+    int REQUESTCODE = 300;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +129,7 @@ public class CameraActivity extends AppCompatActivity{
         setContentView(R.layout.activity_camera);
 
 
-        Button button = findViewById(R.id.button);
+        FloatingActionButton button = findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -94,6 +138,10 @@ public class CameraActivity extends AppCompatActivity{
         });
 
         mSurfaceView = findViewById(R.id.preview);
+        mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        mMagnetometer = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+        deviceOrientation = new DeviceOrientation();
 
         //권한
         if (!hasPermissions(PERMISSIONS)) {
@@ -103,62 +151,21 @@ public class CameraActivity extends AppCompatActivity{
         }
     }
 
-    private void InitMLKit(){
-        FirebaseCustomLocalModel localModel = new FirebaseCustomLocalModel.Builder()
-                .setAssetFilePath("detect.tflite")
-                .build();
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     //Camera Functions
 
     @Override
     protected void onResume() {
         super.onResume();
+
+        mSensorManager.registerListener(deviceOrientation.getEventListener(), mAccelerometer, SensorManager.SENSOR_DELAY_UI);
+        mSensorManager.registerListener(deviceOrientation.getEventListener(), mMagnetometer, SensorManager.SENSOR_DELAY_UI);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
 
+        mSensorManager.unregisterListener(deviceOrientation.getEventListener());
     }
 
     public void initSurfaceView() {
@@ -236,6 +243,9 @@ public class CameraActivity extends AppCompatActivity{
             buffer.get(bytes);
             final Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
             new SaveImageTask().execute(bitmap);
+
+            Intent intent = new Intent(CameraActivity.this, PreviewActivity.class);
+            //intent.putExtra("url",)
         }
     };
 
@@ -274,6 +284,12 @@ public class CameraActivity extends AppCompatActivity{
 
     private CameraCaptureSession.StateCallback mSessionPreviewStateCallback = new CameraCaptureSession.StateCallback() {
         @Override
+        public void onClosed(@NonNull CameraCaptureSession session) {
+            super.onClosed(session);
+
+        }
+
+        @Override
         public void onConfigured(@NonNull CameraCaptureSession session) {
             mSession = session;
 
@@ -297,7 +313,8 @@ public class CameraActivity extends AppCompatActivity{
         @Override
         public void onCaptureCompleted(CameraCaptureSession session, CaptureRequest request, TotalCaptureResult result) {
             mSession = session;
-            unlockFocus();
+//            Toast.makeText(CameraActivity.this,"completed",Toast.LENGTH_LONG).show();
+//            unlockFocus();
         }
 
         @Override
@@ -314,20 +331,20 @@ public class CameraActivity extends AppCompatActivity{
 
 
     public void takePicture() {
-
+        if(mCameraDevice==null)return;
         try {
-            CaptureRequest.Builder captureRequestBuilder = mCameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE);//用来设置拍照请求的request
+            CaptureRequest.Builder captureRequestBuilder = mCameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE);
             captureRequestBuilder.addTarget(mImageReader.getSurface());
             captureRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
             captureRequestBuilder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH);
 
-
-            // 화면 회전 안되게 고정시켜 놓은 상태에서는 아래 로직으로 방향을 얻을 수 없어서
-            // 센서를 사용하는 것으로 변경
-            //deviceRotation = getResources().getConfiguration().orientation;
+            mDeviceRotation = ORIENTATIONS.get(deviceOrientation.getOrientation());
+            captureRequestBuilder.set(CaptureRequest.JPEG_ORIENTATION, mDeviceRotation);
 
             CaptureRequest mCaptureRequest = captureRequestBuilder.build();
             mSession.capture(mCaptureRequest, mSessionCaptureCallback, mHandler);
+            mCameraDevice.close();
+            mCameraDevice=null;
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
@@ -350,6 +367,7 @@ public class CameraActivity extends AppCompatActivity{
      * finished.
      */
     private void unlockFocus() {
+        if(mCameraDevice==null) return;
         try {
             // Reset the auto-focus trigger
             mPreviewBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER,
@@ -359,6 +377,7 @@ public class CameraActivity extends AppCompatActivity{
             mSession.capture(mPreviewBuilder.build(), mSessionCaptureCallback,
                     mHandler);
             // After this, the camera will go back to the normal state of preview.
+            if(mCameraDevice==null) return;
             mSession.setRepeatingRequest(mPreviewBuilder.build(), mSessionCaptureCallback,
                     mHandler);
         } catch (CameraAccessException e) {
@@ -374,7 +393,7 @@ public class CameraActivity extends AppCompatActivity{
      * that is inserted manually gets saved at the end of the gallery (because date is not populated).
      * @see android.provider.MediaStore.Images.Media#insertImage(ContentResolver, Bitmap, String, String)
      */
-    public static final String insertImage(ContentResolver cr,
+    public final String insertImage(ContentResolver cr,
                                            Bitmap source,
                                            String title,
                                            String description) {
@@ -384,6 +403,7 @@ public class CameraActivity extends AppCompatActivity{
         values.put(MediaStore.Images.Media.DISPLAY_NAME, title);
         values.put(MediaStore.Images.Media.DESCRIPTION, description);
         values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
+
         // Add the date meta data to ensure the image is added at the front of the gallery
         values.put(MediaStore.Images.Media.DATE_ADDED, System.currentTimeMillis());
         values.put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis());
@@ -397,7 +417,7 @@ public class CameraActivity extends AppCompatActivity{
             if (source != null) {
                 OutputStream imageOut = cr.openOutputStream(url);
                 try {
-                    source.compress(Bitmap.CompressFormat.JPEG, 50, imageOut);
+                    source.compress(Bitmap.CompressFormat.JPEG, 70, imageOut);
                 } finally {
                     imageOut.close();
                 }
@@ -420,14 +440,32 @@ public class CameraActivity extends AppCompatActivity{
         return stringUrl;
     }
 
+    private String SaveBitmapToJpegInternalTemp(Bitmap bitmap){
+        File storage = getFilesDir();
+        File tempFile = new File(storage, "temp.jpg");
+        String result = tempFile.getAbsolutePath();
+        try{
+            tempFile.createNewFile();
+            FileOutputStream out = new FileOutputStream(tempFile);
+            bitmap.compress(Bitmap.CompressFormat.JPEG,80,out);
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
 
     private class SaveImageTask extends AsyncTask<Bitmap, Void, Void> {
-
+        String URL;
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
 
-            Toast.makeText(CameraActivity.this, "사진을 저장하였습니다.", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(CameraActivity.this, "사진을 저장하였습니다.", Toast.LENGTH_SHORT).show();
+            //Log.d("Saved","Saved at :"+ URL);
+            Intent intent = new Intent(CameraActivity.this,PreviewActivity.class);
+            startActivityForResult(intent,REQUESTCODE);
         }
 
         @Override
@@ -435,12 +473,12 @@ public class CameraActivity extends AppCompatActivity{
 
             Bitmap bitmap = null;
             try {
-                bitmap = data[0];
+                bitmap = getRotatedBitmap(data[0], mDeviceRotation);
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            insertImage(getContentResolver(), bitmap, ""+System.currentTimeMillis(), "");
-
+            //URL = insertImage(getContentResolver(), bitmap, ""+System.currentTimeMillis(), "");
+            URL = SaveBitmapToJpegInternalTemp(bitmap);
             return null;
         }
 
@@ -469,6 +507,7 @@ public class CameraActivity extends AppCompatActivity{
     }
 
 
+    //Get Permission
     static final int PERMISSIONS_REQUEST_CODE = 1000;
     String[] PERMISSIONS  = {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
@@ -518,6 +557,16 @@ public class CameraActivity extends AppCompatActivity{
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==REQUESTCODE){
+            if(resultCode==RESULT_OK){
+                setResult(RESULT_OK);
+                finish();
+            }
+        }
+    }
 
     @TargetApi(Build.VERSION_CODES.M)
     private void showDialogForPermission(String msg) {
