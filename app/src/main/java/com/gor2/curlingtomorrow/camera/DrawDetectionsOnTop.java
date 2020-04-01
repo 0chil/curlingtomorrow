@@ -8,6 +8,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.Log;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.gor2.curlingtomorrow.detection.Detection;
@@ -16,11 +17,11 @@ import java.util.ArrayList;
 
 public class DrawDetectionsOnTop extends View {
     ArrayList<Detection> detections;
-    ImageView imageView;
-    public DrawDetectionsOnTop(Context context, ArrayList<Detection> detections, ImageView imageView) {
+    FrameLayout frameLayout;
+    public DrawDetectionsOnTop(Context context, ArrayList<Detection> detections, FrameLayout frameLayout) {
         super(context);
         this.detections = detections;
-        this.imageView = imageView;
+        this.frameLayout = frameLayout;
     }
 
     @Override
@@ -38,8 +39,8 @@ public class DrawDetectionsOnTop extends View {
         for(Detection detection : detections) {
 
             RectF rect = detection.getRect();
-            float widthMul = imageView.getMeasuredWidth();
-            float heightMul = imageView.getMeasuredWidth()*1.33f;
+            float widthMul = frameLayout.getMeasuredWidth();
+            float heightMul = frameLayout.getMeasuredWidth()*1.33f;
             rect.left *= widthMul;
             rect.right *= widthMul;
             rect.top *= heightMul;

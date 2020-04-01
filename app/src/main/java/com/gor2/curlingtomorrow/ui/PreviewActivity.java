@@ -3,17 +3,21 @@ package com.gor2.curlingtomorrow.ui;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.PointF;
 import android.graphics.RectF;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -30,6 +34,7 @@ import com.google.firebase.ml.custom.FirebaseModelInputs;
 import com.google.firebase.ml.custom.FirebaseModelInterpreter;
 import com.google.firebase.ml.custom.FirebaseModelInterpreterOptions;
 import com.google.firebase.ml.custom.FirebaseModelOutputs;
+import com.gor2.curlingtomorrow.DialogSave;
 import com.gor2.curlingtomorrow.R;
 import com.gor2.curlingtomorrow.camera.DrawDetectionsOnTop;
 import com.gor2.curlingtomorrow.detection.Detection;
@@ -40,11 +45,12 @@ import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.Comparator;
 
-public class PreviewActivity extends AppCompatActivity {
+public class PreviewActivity extends AppCompatActivity{
     ImageView imgTaken;
     FloatingActionButton btnSave;
     FloatingActionButton btnRetry;
     FrameLayout frameLayout;
+    public TextView txtScore, txtPlayerRed, txtPlayerYellow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +91,11 @@ public class PreviewActivity extends AppCompatActivity {
         //FrameLayout
         frameLayout = findViewById(R.id.frameLayout);
 
+        //TextViews
+        txtScore = findViewById(R.id.txtScore);
+        txtPlayerRed = findViewById(R.id.txtPlayerRed);
+        txtPlayerYellow = findViewById(R.id.txtPlayerYellow);
+
         //ML Kit Initialize
         try { InitMLKit(); } catch (FirebaseMLException e) { e.printStackTrace(); }
 
@@ -99,9 +110,15 @@ public class PreviewActivity extends AppCompatActivity {
 
     private void AfterDetection(ArrayList<Detection> detections){
         if(!detections.isEmpty()) {
-            DrawDetectionsOnTop overlayDrawer = new DrawDetectionsOnTop(PreviewActivity.this, detections, imgTaken);
-            frameLayout.addView(overlayDrawer, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
+            //Show Dialog for Player Name
+            DialogSave dialogSave = new DialogSave(PreviewActivity.this);
+            dialogSave.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            dialogSave.setCancelable(false);
+            dialogSave.show();
 
+            DrawDetectionsOnTop overlayDrawer = new DrawDetectionsOnTop(PreviewActivity.this, detections, frameLayout);
+            frameLayout.addView(overlayDrawer, new LinearLayout.LayoutParams(imgTaken.getMeasuredWidth(), imgTaken.getMeasuredHeight()));
+//            frameLayout.addView(overlayDrawer, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT));
             for(Detection detection : detections)
                 detection.setDistance(GetDistanceFromCenter(detection.getCenter()));
 
@@ -116,16 +133,17 @@ public class PreviewActivity extends AppCompatActivity {
 
             if(firstStone == 0){
                 //Winner : Red
-                Toast.makeText(this,String.format("Red : %d , Yellow : %d",sameCount,0),Toast.LENGTH_LONG).show();
+                txtScore.setText(String.format("%d:%d",sameCount,0));
                 Log.e("Result", String.format("Red : %d , Yellow : %d",sameCount,0));
             }else{
                 //Winner : Yellow
-                Toast.makeText(this,String.format("Red : %d , Yellow : %d",0,sameCount),Toast.LENGTH_LONG).show();
+                txtScore.setText(String.format("%d:%d",0,sameCount));
                 Log.e("Result", String.format("Red : %d , Yellow : %d",0,sameCount));
             }
         }else{
             //No detections Found
-            Toast.makeText(this,"스톤이 인식되지 않았습니다\n다시 촬영해주세요",Toast.LENGTH_LONG).show();
+            Toast.makeText(this,"스톤이 인식되지 않았습니다\n다시 촬영해주세요",Toast.LENGTH_SHORT).show();
+            txtScore.setText("-");
         }
     }
 
