@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:text="표적지를 가이드라인에 맞춰주세요"
         android:textAlignment="center"
-        android:textSize="20sp" />
+        android:textSize="20dp" />
 
     <SurfaceView
         android:id="@+id/preview"

@@ -7,6 +7,7 @@ import android.graphics.RectF;
 public class Detection {
     private RectF rect;
     private int classNumber;
+    private Float distance;
 
     public Detection(int classNumber, RectF rect){
         this.classNumber = classNumber;
@@ -19,6 +20,14 @@ public class Detection {
 
     public RectF getRect() {
         return rect;
+    }
+
+    public Float getDistance() {
+        return distance;
+    }
+
+    public void setDistance(Float distance) {
+        this.distance = distance;
     }
 
     public void setClassNumber(int classNumber) {

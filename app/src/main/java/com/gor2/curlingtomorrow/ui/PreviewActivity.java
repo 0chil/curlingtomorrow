@@ -8,10 +8,13 @@ import android.graphics.PointF;
 import android.graphics.RectF;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -35,9 +38,13 @@ import java.io.File;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class PreviewActivity extends AppCompatActivity {
     ImageView imgTaken;
+    FloatingActionButton btnSave;
+    FloatingActionButton btnRetry;
+    FrameLayout frameLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,41 +63,9 @@ public class PreviewActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_preview);
 
-        //ML Kit Initialize
-        try { InitMLKit(); } catch (FirebaseMLException e) { e.printStackTrace(); }
-
-        //Temp.jpg 읽어옴
-        imgTaken = findViewById(R.id.imgTaken);
-        imgTaken.setImageBitmap(GetBitmapFromInternal());
-
-        //Inference
-        ArrayList<Detection> detections = null;
-        try { detections = InferenceLocation(GetBitmapFromInternal(),imgTaken); } catch (FirebaseMLException e) { e.printStackTrace(); }
-
-        //Draw from Results
-        if(detections != null) {
-            DrawDetectionsOnTop overlayDrawer = new DrawDetectionsOnTop(PreviewActivity.this, detections, imgTaken);
-            addContentView(overlayDrawer, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
-            Float redTeamMin=Float.MAX_VALUE, yellowTeamMin=Float.MAX_VALUE;
-            for(Detection detection : detections){
-                Float distance = GetDistanceFromCenter(detection.getCenter());
-                switch(detection.getClassNumber()){
-                    case 0:
-                        redTeamMin = ( redTeamMin > distance )? distance : redTeamMin;
-                        break;
-                    case 1:
-                        yellowTeamMin = ( yellowTeamMin > distance )? distance : yellowTeamMin;
-                        break;
-                }
-            }
-        }else{
-            //No detections Found
-        }
-
-
         //Save & Retry Button
-        FloatingActionButton btnSave = findViewById(R.id.btnSave);
-        FloatingActionButton btnRetry = findViewById(R.id.btnRetry);
+        btnSave = findViewById(R.id.btnSave);
+        btnRetry = findViewById(R.id.btnRetry);
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -106,6 +81,52 @@ public class PreviewActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        //FrameLayout
+        frameLayout = findViewById(R.id.frameLayout);
+
+        //ML Kit Initialize
+        try { InitMLKit(); } catch (FirebaseMLException e) { e.printStackTrace(); }
+
+        //Read Temp.jpg
+        imgTaken = findViewById(R.id.imgTaken);
+        imgTaken.setImageBitmap(GetBitmapFromInternal());
+
+        //Inference
+        try { InferenceLocation(GetBitmapFromInternal(),imgTaken); } catch (FirebaseMLException e) { e.printStackTrace(); }
+
+    }
+
+    private void AfterDetection(ArrayList<Detection> detections){
+        if(!detections.isEmpty()) {
+            DrawDetectionsOnTop overlayDrawer = new DrawDetectionsOnTop(PreviewActivity.this, detections, imgTaken);
+            frameLayout.addView(overlayDrawer, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
+
+            for(Detection detection : detections)
+                detection.setDistance(GetDistanceFromCenter(detection.getCenter()));
+
+            detections.sort(new Ascending());
+
+            int firstStone = detections.get(0).getClassNumber();
+            int sameCount = 0;
+            for(Detection detection : detections){
+                if(detection.getClassNumber() == firstStone)
+                    sameCount++;
+            }
+
+            if(firstStone == 0){
+                //Winner : Red
+                Toast.makeText(this,String.format("Red : %d , Yellow : %d",sameCount,0),Toast.LENGTH_LONG).show();
+                Log.e("Result", String.format("Red : %d , Yellow : %d",sameCount,0));
+            }else{
+                //Winner : Yellow
+                Toast.makeText(this,String.format("Red : %d , Yellow : %d",0,sameCount),Toast.LENGTH_LONG).show();
+                Log.e("Result", String.format("Red : %d , Yellow : %d",0,sameCount));
+            }
+        }else{
+            //No detections Found
+            Toast.makeText(this,"스톤이 인식되지 않았습니다\n다시 촬영해주세요",Toast.LENGTH_LONG).show();
+        }
     }
 
     private Float GetDistanceFromCenter(PointF stone){
@@ -143,10 +164,7 @@ public class PreviewActivity extends AppCompatActivity {
                 .build();
     }
 
-    private ArrayList<Detection> InferenceLocation(Bitmap bitmap,final ImageView imgTaken) throws FirebaseMLException {
-
-        final ArrayList<Detection> detections = new ArrayList<>();
-
+    private void InferenceLocation(Bitmap bitmap,final ImageView imgTaken) throws FirebaseMLException {
         int[] intValues = new int[102400];//320*320
         bitmap = Bitmap.createScaledBitmap(bitmap, 320, 320, true);
 
@@ -172,12 +190,15 @@ public class PreviewActivity extends AppCompatActivity {
                             @Override
                             public void onSuccess(FirebaseModelOutputs result) {
                                 //On Success
+                                ArrayList<Detection> detections = new ArrayList<>();
+
                                 //TFLite Outputs
                                 float[][][] detection_boxes = result.getOutput(0);
                                 float[][] detection_classes = result.getOutput(1);
                                 float[][] detection_scores = result.getOutput(2);
                                 float[] num_detections = result.getOutput(3);
 
+                                //Create Detection Class Instances
                                 for(int i = 0; i < num_detections[0]; i++) {
                                     if (detection_scores[0][i] < 0.5f) continue;
                                     detections.add(
@@ -196,6 +217,7 @@ public class PreviewActivity extends AppCompatActivity {
                                     Log.e("ML", "scores : " + detection_scores[0][i]);
                                     Log.e("ML", "classes : " + detection_classes[0][i]);
                                 }
+                                AfterDetection(detections);
                             }
                         })
                 .addOnFailureListener(
@@ -207,6 +229,12 @@ public class PreviewActivity extends AppCompatActivity {
                                 e.printStackTrace();
                             }
                         });
-        return detections;
+    }
+}
+
+class Ascending implements Comparator<Detection>{
+    @Override
+    public int compare(Detection o1, Detection o2) {
+        return o2.getDistance().compareTo(o1.getDistance());
     }
 }
