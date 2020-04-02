@@ -1,16 +1,16 @@
 package com.gor2.curlingtomorrow.dataclass;
 
 public class Result {
-    private String dateTime,playerRedName,playerYellowName,imagePath;
+    private String dateTime,playerRedName,playerYellowName,imageFileName;
     int playerRedScore,playerYellowScore;
 
-    public Result(String dateTime,String playerRedName,String playerYellowName,int playerRedScore,int playerYellowScore, String imagePath){
+    public Result(String dateTime,String playerRedName,String playerYellowName,int playerRedScore,int playerYellowScore, String imageFileName){
         this.dateTime= dateTime;
         this.playerRedName = playerRedName;
         this.playerYellowName = playerYellowName;
         this.playerRedScore = playerRedScore;
         this.playerYellowScore = playerYellowScore;
-        this.imagePath = imagePath;
+        this.imageFileName = imageFileName;
     }
 
     public String getDateTime() {
@@ -31,9 +31,9 @@ public class Result {
         return playerYellowScore;
     }
 
-    public String getImagePath() { return imagePath; }
+    public String getImageFileName() { return imageFileName; }
 
-    public void setImagePath(String imagePath) { this.imagePath = imagePath; }
+    public void setImageFileName(String imagePath) { this.imageFileName = imagePath; }
 
     public void setDateTime(String dateTime) {
         this.dateTime = dateTime;

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingTop="30dp"
+    tools:context=".ui.ShowResultActivity">
+
+    <FrameLayout
+        android:id="@+id/frameLayout_showresult"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/border"
+        android:padding="1dp">
+
+        <ImageView
+            android:id="@+id/imgTaken_showresult"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            android:scaleType="fitStart"
+            app:srcCompat="@drawable/ic_launcher_foreground" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/border"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/txtPlayerRed_showresult"
+                android:layout_width="match_parent"
+                android:layout_height="24dp"
+                android:layout_weight="1"
+                android:background="@color/red"
+                android:gravity="center"
+                android:textAlignment="center"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                android:textColor="#FFFFFF" />
+
+            <ImageView
+                android:id="@+id/imageView_showresult"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/gredient"
+                app:srcCompat="@drawable/ic_compare_arrows_black_24dp" />
+
+            <TextView
+                android:id="@+id/txtPlayerYellow_showresult"
+                android:layout_width="match_parent"
+                android:layout_height="24dp"
+                android:layout_weight="1"
+                android:background="@color/yellow"
+                android:gravity="center"
+                android:textAlignment="center"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                android:textColor="#FFFFFF" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/txtScore_showresult"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="처리중"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:textColor="#000000"
+            android:textSize="60sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btnList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:clickable="true"
+            app:backgroundTint="@color/colorPrimary"
+            app:srcCompat="@drawable/ic_list_alt_24px" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btnShare"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:clickable="true"
+            app:backgroundTint="@color/colorPrimary"
+            app:fabCustomSize="80dp"
+            app:maxImageSize="40dp"
+            app:srcCompat="@drawable/ic_share_24px" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btnDelete"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            app:backgroundTint="@color/disabled"
+            app:srcCompat="@drawable/ic_delete_24px" />
+
+    </LinearLayout>
+
+</LinearLayout>

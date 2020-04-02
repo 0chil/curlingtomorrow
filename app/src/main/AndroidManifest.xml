@@ -17,6 +17,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".ui.PreviewActivity" />
+        <activity android:name=".ui.ShowResultActivity" />
         <activity android:name=".NoticeActivity" />
         <activity android:name=".ui.CameraActivity" />
         <activity

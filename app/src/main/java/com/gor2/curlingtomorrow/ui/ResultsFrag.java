@@ -31,7 +31,7 @@ public class ResultsFrag extends Fragment {
 
         resultAdapter = new ResultAdapter(results);
         recyclerView.setAdapter(resultAdapter);
-        
+
         Refresh();
         return root;
     }

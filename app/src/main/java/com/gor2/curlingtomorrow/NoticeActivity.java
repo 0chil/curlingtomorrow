@@ -12,7 +12,6 @@ public class NoticeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notice);
-        finish();
         getSupportActionBar().hide();
 
         Button btnClose = findViewById(R.id.btnClose);

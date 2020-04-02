@@ -1,4 +1,4 @@
-package com.gor2.curlingtomorrow;
+package com.gor2.curlingtomorrow.ui;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.gor2.curlingtomorrow.R;
 import com.gor2.curlingtomorrow.ui.PreviewActivity;
 
 public class DialogSave extends Dialog{

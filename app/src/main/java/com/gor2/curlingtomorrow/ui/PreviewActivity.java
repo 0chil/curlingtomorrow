@@ -33,7 +33,6 @@ import com.google.firebase.ml.custom.FirebaseModelInterpreter;
 import com.google.firebase.ml.custom.FirebaseModelInterpreterOptions;
 import com.google.firebase.ml.custom.FirebaseModelOutputs;
 import com.gor2.curlingtomorrow.Curlingtomorrow;
-import com.gor2.curlingtomorrow.DialogSave;
 import com.gor2.curlingtomorrow.R;
 import com.gor2.curlingtomorrow.camera.DrawDetectionsOnTop;
 import com.gor2.curlingtomorrow.dataclass.Detection;
@@ -289,16 +288,16 @@ public class PreviewActivity extends AppCompatActivity{
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return result;
+        return fileName;
     }
 
 
     private class SaveImageTask extends AsyncTask<Bitmap, Void, Void> {
-        String URL;
+        String fileName;
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            result.setImagePath(URL);
+            result.setImageFileName(fileName);
             result.setPlayerRedName(txtPlayerRed.getText().toString());
             result.setPlayerYellowName(txtPlayerYellow.getText().toString());
             ((Curlingtomorrow) getApplication()).AddResult(result);
@@ -315,7 +314,7 @@ public class PreviewActivity extends AppCompatActivity{
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            URL = SaveBitmapToJpegInternalTemp(bitmap,System.currentTimeMillis()+".jpg");
+            fileName = SaveBitmapToJpegInternalTemp(bitmap,System.currentTimeMillis()+".jpg");
             return null;
         }
 
