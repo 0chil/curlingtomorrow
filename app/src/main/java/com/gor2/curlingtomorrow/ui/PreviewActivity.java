@@ -10,6 +10,7 @@ import android.graphics.RectF;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,16 +35,20 @@ import com.google.firebase.ml.custom.FirebaseModelInputs;
 import com.google.firebase.ml.custom.FirebaseModelInterpreter;
 import com.google.firebase.ml.custom.FirebaseModelInterpreterOptions;
 import com.google.firebase.ml.custom.FirebaseModelOutputs;
+import com.gor2.curlingtomorrow.Curlingtomorrow;
 import com.gor2.curlingtomorrow.DialogSave;
 import com.gor2.curlingtomorrow.R;
 import com.gor2.curlingtomorrow.camera.DrawDetectionsOnTop;
 import com.gor2.curlingtomorrow.detection.Detection;
+import com.gor2.curlingtomorrow.result.Result;
 
 import java.io.File;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Date;
 
 public class PreviewActivity extends AppCompatActivity{
     ImageView imgTaken;
@@ -51,6 +56,7 @@ public class PreviewActivity extends AppCompatActivity{
     FloatingActionButton btnRetry;
     FrameLayout frameLayout;
     public TextView txtScore, txtPlayerRed, txtPlayerYellow;
+    Result result;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +81,7 @@ public class PreviewActivity extends AppCompatActivity{
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                SaveImageAndResult();
                 setResult(RESULT_OK);
                 finish();
             }
@@ -108,22 +115,40 @@ public class PreviewActivity extends AppCompatActivity{
 
     }
 
+    private void SaveImageAndResult(){
+        if(result == null){ Toast.makeText(this,"스톤이 인식되지 않았습니다",Toast.LENGTH_SHORT); return; }
+        ( (Curlingtomorrow) getApplication() ).AddResult(result);
+    }
+
     private void AfterDetection(ArrayList<Detection> detections){
         if(!detections.isEmpty()) {
+            int redScore, yellowScore;
+
+            // Current Timestamp
+            long now = System.currentTimeMillis();
+            Date date = new Date(now);
+            SimpleDateFormat sdfNow = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+            String formatDate = sdfNow.format(date);
+
+
             //Show Dialog for Player Name
             DialogSave dialogSave = new DialogSave(PreviewActivity.this);
             dialogSave.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             dialogSave.setCancelable(false);
             dialogSave.show();
 
+            //Draw Detection Boxes
             DrawDetectionsOnTop overlayDrawer = new DrawDetectionsOnTop(PreviewActivity.this, detections, frameLayout);
             frameLayout.addView(overlayDrawer, new LinearLayout.LayoutParams(imgTaken.getMeasuredWidth(), imgTaken.getMeasuredHeight()));
-//            frameLayout.addView(overlayDrawer, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT));
+
+            //Calculate Distance
             for(Detection detection : detections)
                 detection.setDistance(GetDistanceFromCenter(detection.getCenter()));
 
+            //Sort By Distance, Ascending
             detections.sort(new Ascending());
 
+            //Get Continuous count
             int firstStone = detections.get(0).getClassNumber();
             int sameCount = 0;
             for(Detection detection : detections){
@@ -131,18 +156,24 @@ public class PreviewActivity extends AppCompatActivity{
                     sameCount++;
             }
 
+            //Set Winner
             if(firstStone == 0){
                 //Winner : Red
-                txtScore.setText(String.format("%d:%d",sameCount,0));
-                Log.e("Result", String.format("Red : %d , Yellow : %d",sameCount,0));
+                redScore = sameCount;
+                yellowScore = 0;
+
             }else{
                 //Winner : Yellow
-                txtScore.setText(String.format("%d:%d",0,sameCount));
-                Log.e("Result", String.format("Red : %d , Yellow : %d",0,sameCount));
+                redScore = 0;
+                yellowScore = sameCount;
             }
+            txtScore.setText(String.format("%d:%d",redScore,yellowScore));
+            result = new Result(formatDate,txtPlayerRed.getText().toString(),txtPlayerYellow.getText().toString(),redScore,yellowScore);
         }else{
             //No detections Found
-            Toast.makeText(this,"스톤이 인식되지 않았습니다\n다시 촬영해주세요",Toast.LENGTH_SHORT).show();
+            Toast toast = Toast.makeText(this,"스톤이 인식되지 않았습니다\n다시 촬영해주세요",Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.CENTER,0,0);
+            toast.show();
             txtScore.setText("-");
         }
     }

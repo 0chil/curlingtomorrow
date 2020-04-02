@@ -33,8 +33,8 @@ public class DialogSave extends Dialog{
         btnSet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((PreviewActivity)context).txtPlayerRed.setText(txtPlayerNameRed.getText());
-                ((PreviewActivity)context).txtPlayerYellow.setText(txtPlayerNameYellow.getText());
+                ((PreviewActivity)context).txtPlayerRed.setText(txtPlayerNameRed.getText().toString());
+                ((PreviewActivity)context).txtPlayerYellow.setText(txtPlayerNameYellow.getText().toString());
                 dismiss();
             }
         });
