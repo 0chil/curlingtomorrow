@@ -4,10 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
-import com.facebook.stetho.Stetho;
-import com.gor2.curlingtomorrow.dataclass.Detection;
 import com.gor2.curlingtomorrow.dataclass.Result;
 
 import org.json.JSONArray;

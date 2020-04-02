@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity{
 
     BottomNavigationView navView;
     Fragment manualFrag, resultsFrag;
-    final int REQUESTCODE = 400;
+    public final static int REQUESTCODE = 400;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         final FragmentManager fm = getSupportFragmentManager();
@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity{
         if(requestCode == REQUESTCODE){
             if(resultCode == RESULT_OK){
                 navView.setSelectedItemId(R.id.navigation_results);
+                resultsFrag.onActivityResult(requestCode,resultCode,data);
             }
         }
     }

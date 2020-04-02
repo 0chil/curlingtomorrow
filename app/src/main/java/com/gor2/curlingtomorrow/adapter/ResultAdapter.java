@@ -21,7 +21,7 @@ import java.util.ArrayList;
 
 public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.ViewHolder> {
 
-    private ArrayList<Result> results;
+    ArrayList<Result> results;
 
     public class ViewHolder extends RecyclerView.ViewHolder{
         TextView txtDate, txtPlayerRed, txtRedScore, txtPlayerYellow, txtYellowScore, txtRedWin, txtYellowWin;
