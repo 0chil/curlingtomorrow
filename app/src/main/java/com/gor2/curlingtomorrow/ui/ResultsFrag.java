@@ -17,8 +17,11 @@ public class ResultsFrag extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.activity_results, container, false);
-        final TextView textView = root.findViewById(R.id.text_notifications);
-        textView.setText("게임결과 표시");
+        Refresh();
         return root;
+    }
+
+    public void Refresh(){
+
     }
 }

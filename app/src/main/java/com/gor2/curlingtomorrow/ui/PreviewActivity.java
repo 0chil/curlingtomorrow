@@ -117,7 +117,7 @@ public class PreviewActivity extends AppCompatActivity{
     }
 
     private void SaveImageAndResult(){
-        if(result == null){ Toast.makeText(this,"스톤이 인식되지 않았습니다",Toast.LENGTH_SHORT); return; }
+        if(result == null){ Toast.makeText(this,"스톤이 인식되지 않았습니다",Toast.LENGTH_SHORT).show(); return; }
         new SaveImageTask().execute(GetBitmapFromInternal());
     }
 
@@ -173,7 +173,7 @@ public class PreviewActivity extends AppCompatActivity{
         }else{
             //No detections Found
             Toast toast = Toast.makeText(this,"스톤이 인식되지 않았습니다\n다시 촬영해주세요",Toast.LENGTH_SHORT);
-            toast.setGravity(Gravity.CENTER,0,0);
+            toast.setGravity(Gravity.CENTER_HORIZONTAL|Gravity.BOTTOM,0,120);
             toast.show();
             txtScore.setText("-");
         }
