@@ -41,7 +41,8 @@ public class ResultsFrag extends Fragment {
     }
 
     public void Refresh(){
-        resultAdapter.notifyDataSetChanged();
+        if(resultAdapter != null)
+            resultAdapter.notifyDataSetChanged();
     }
 
     @Override

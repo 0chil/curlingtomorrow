@@ -424,15 +424,7 @@ public class CameraActivity extends AppCompatActivity implements ActivityCompat.
         switch(requestCode){
             case PERMISSIONS_REQUEST_CODE:
                 if (grantResults.length > 0) {
-                    boolean cameraPermissionAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
-                    boolean diskPermissionAccepted = grantResults[1] == PackageManager.PERMISSION_GRANTED;
-
-                    if (!cameraPermissionAccepted || !diskPermissionAccepted)
-                        showDialogForPermission("카메라를 사용하려면 권한이 필요합니다");
-                    else
-                    {
-                        finish();
-                    }
+                    finish();
                 }
                 break;
         }
@@ -447,26 +439,6 @@ public class CameraActivity extends AppCompatActivity implements ActivityCompat.
                 finish();
             }
         }
-    }
-
-    @TargetApi(Build.VERSION_CODES.M)
-    private void showDialogForPermission(String msg) {
-
-        AlertDialog.Builder builder = new AlertDialog.Builder( CameraActivity.this);
-        builder.setTitle("알림");
-        builder.setMessage(msg);
-        builder.setCancelable(false);
-        builder.setPositiveButton("예", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id){
-                requestPermissions(PERMISSIONS, PERMISSIONS_REQUEST_CODE);
-            }
-        });
-        builder.setNegativeButton("아니오", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface arg0, int arg1) {
-                finish();
-            }
-        });
-        builder.create().show();
     }
 
 

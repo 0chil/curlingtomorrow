@@ -60,7 +60,8 @@ public class MainActivity extends AppCompatActivity{
         if(requestCode == REQUESTCODE){
             if(resultCode == RESULT_OK){
                 navView.setSelectedItemId(R.id.navigation_results);
-                resultsFrag.onActivityResult(requestCode,resultCode,data);
+                if(resultsFrag!=null)
+                    resultsFrag.onActivityResult(requestCode,resultCode,data);
             }
         }
     }
