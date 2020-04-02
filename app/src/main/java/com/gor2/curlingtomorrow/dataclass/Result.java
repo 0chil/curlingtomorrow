@@ -1,5 +1,8 @@
 package com.gor2.curlingtomorrow.dataclass;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 public class Result {
     private String dateTime,playerRedName,playerYellowName,imageFileName;
     int playerRedScore,playerYellowScore;
@@ -11,6 +14,28 @@ public class Result {
         this.playerRedScore = playerRedScore;
         this.playerYellowScore = playerYellowScore;
         this.imageFileName = imageFileName;
+    }
+
+    public JSONArray toJSONArray(){
+        JSONArray jsonArray = new JSONArray();
+        jsonArray.put(dateTime);
+        jsonArray.put(playerRedName);
+        jsonArray.put(playerYellowName);
+        jsonArray.put(playerRedScore);
+        jsonArray.put(playerYellowScore);
+        jsonArray.put(imageFileName);
+        return jsonArray;
+    }
+
+    public static Result parseJSONArray(JSONArray jsonArray) throws JSONException {
+        return new Result(
+                jsonArray.getString(0),
+                jsonArray.getString(1),
+                jsonArray.getString(2),
+                jsonArray.getInt(3),
+                jsonArray.getInt(4),
+                jsonArray.getString(5)
+        );
     }
 
     public String getDateTime() {
