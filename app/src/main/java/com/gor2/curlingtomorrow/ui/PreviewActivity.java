@@ -117,6 +117,7 @@ public class PreviewActivity extends AppCompatActivity{
 
     private void SaveImageAndResult(){
         if(result == null){ Toast.makeText(this,"스톤이 인식되지 않았습니다",Toast.LENGTH_SHORT); return; }
+
         ( (Curlingtomorrow) getApplication() ).AddResult(result);
     }
 
@@ -168,7 +169,7 @@ public class PreviewActivity extends AppCompatActivity{
                 yellowScore = sameCount;
             }
             txtScore.setText(String.format("%d:%d",redScore,yellowScore));
-            result = new Result(formatDate,txtPlayerRed.getText().toString(),txtPlayerYellow.getText().toString(),redScore,yellowScore);
+            result = new Result(formatDate,txtPlayerRed.getText().toString(),txtPlayerYellow.getText().toString(),redScore,yellowScore,"");
         }else{
             //No detections Found
             Toast toast = Toast.makeText(this,"스톤이 인식되지 않았습니다\n다시 촬영해주세요",Toast.LENGTH_SHORT);

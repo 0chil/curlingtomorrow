@@ -243,9 +243,6 @@ public class CameraActivity extends AppCompatActivity implements ActivityCompat.
             buffer.get(bytes);
             final Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
             new SaveImageTask().execute(bitmap);
-
-            Intent intent = new Intent(CameraActivity.this, PreviewActivity.class);
-            //intent.putExtra("url",)
         }
     };
 
@@ -313,8 +310,6 @@ public class CameraActivity extends AppCompatActivity implements ActivityCompat.
         @Override
         public void onCaptureCompleted(CameraCaptureSession session, CaptureRequest request, TotalCaptureResult result) {
             mSession = session;
-//            Toast.makeText(CameraActivity.this,"completed",Toast.LENGTH_LONG).show();
-//            unlockFocus();
         }
 
         @Override
@@ -360,86 +355,6 @@ public class CameraActivity extends AppCompatActivity implements ActivityCompat.
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), m, true);
     }
 
-
-
-    /**
-     * Unlock the focus. This method should be called when still image capture sequence is
-     * finished.
-     */
-    private void unlockFocus() {
-        if(mCameraDevice==null) return;
-        try {
-            // Reset the auto-focus trigger
-            mPreviewBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER,
-                    CameraMetadata.CONTROL_AF_TRIGGER_CANCEL);
-            mPreviewBuilder.set(CaptureRequest.CONTROL_AE_MODE,
-                    CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH);
-            mSession.capture(mPreviewBuilder.build(), mSessionCaptureCallback,
-                    mHandler);
-            // After this, the camera will go back to the normal state of preview.
-            if(mCameraDevice==null) return;
-            mSession.setRepeatingRequest(mPreviewBuilder.build(), mSessionCaptureCallback,
-                    mHandler);
-        } catch (CameraAccessException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    //출처 - https://codeday.me/ko/qa/20190310/39556.html
-    /**
-     * A copy of the Android internals  insertImage method, this method populates the
-     * meta data with DATE_ADDED and DATE_TAKEN. This fixes a common problem where media
-     * that is inserted manually gets saved at the end of the gallery (because date is not populated).
-     * @see android.provider.MediaStore.Images.Media#insertImage(ContentResolver, Bitmap, String, String)
-     */
-    public final String insertImage(ContentResolver cr,
-                                           Bitmap source,
-                                           String title,
-                                           String description) {
-
-        ContentValues values = new ContentValues();
-        values.put(MediaStore.Images.Media.TITLE, title);
-        values.put(MediaStore.Images.Media.DISPLAY_NAME, title);
-        values.put(MediaStore.Images.Media.DESCRIPTION, description);
-        values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
-
-        // Add the date meta data to ensure the image is added at the front of the gallery
-        values.put(MediaStore.Images.Media.DATE_ADDED, System.currentTimeMillis());
-        values.put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis());
-
-        Uri url = null;
-        String stringUrl = null;    /* value to be returned */
-
-        try {
-            url = cr.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-
-            if (source != null) {
-                OutputStream imageOut = cr.openOutputStream(url);
-                try {
-                    source.compress(Bitmap.CompressFormat.JPEG, 70, imageOut);
-                } finally {
-                    imageOut.close();
-                }
-
-            } else {
-                cr.delete(url, null, null);
-                url = null;
-            }
-        } catch (Exception e) {
-            if (url != null) {
-                cr.delete(url, null, null);
-                url = null;
-            }
-        }
-
-        if (url != null) {
-            stringUrl = url.toString();
-        }
-
-        return stringUrl;
-    }
-
     private String SaveBitmapToJpegInternalTemp(Bitmap bitmap){
         File storage = getFilesDir();
         File tempFile = new File(storage, "temp.jpg");
@@ -462,8 +377,6 @@ public class CameraActivity extends AppCompatActivity implements ActivityCompat.
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
 
-            //Toast.makeText(CameraActivity.this, "사진을 저장하였습니다.", Toast.LENGTH_SHORT).show();
-            //Log.d("Saved","Saved at :"+ URL);
             Intent intent = new Intent(CameraActivity.this,PreviewActivity.class);
             startActivityForResult(intent,REQUESTCODE);
         }
@@ -502,7 +415,7 @@ public class CameraActivity extends AppCompatActivity implements ActivityCompat.
     }
 
     private void updateTextureViewSize(int viewWidth, int viewHeight) {
-        Log.d("@@@", "TextureView Width : " + viewWidth + " TextureView Height : " + viewHeight);
+//        Log.d("@@@", "TextureView Width : " + viewWidth + " TextureView Height : " + viewHeight);
         mSurfaceView.setLayoutParams(new LinearLayout.LayoutParams(viewWidth, viewHeight));
     }
 
@@ -532,19 +445,13 @@ public class CameraActivity extends AppCompatActivity implements ActivityCompat.
 
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
         switch(requestCode){
-
             case PERMISSIONS_REQUEST_CODE:
-
                 if (grantResults.length > 0) {
-                    boolean cameraPermissionAccepted = grantResults[0]
-                            == PackageManager.PERMISSION_GRANTED;
-                    boolean diskPermissionAccepted = grantResults[1]
-                            == PackageManager.PERMISSION_GRANTED;
+                    boolean cameraPermissionAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                    boolean diskPermissionAccepted = grantResults[1] == PackageManager.PERMISSION_GRANTED;
 
                     if (!cameraPermissionAccepted || !diskPermissionAccepted)
                         showDialogForPermission("카메라를 사용하려면 권한이 필요합니다");
