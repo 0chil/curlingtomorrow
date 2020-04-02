@@ -6,9 +6,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
-import android.database.sqlite.SQLiteBindOrColumnIndexOutOfRangeException;
 import android.preference.PreferenceManager;
-import android.text.BoringLayout;
 import android.util.Base64;
 import android.util.Log;
 

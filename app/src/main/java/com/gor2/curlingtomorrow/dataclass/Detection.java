@@ -1,12 +1,9 @@
 package com.gor2.curlingtomorrow.dataclass;
 
-import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.RectF;
 
 import androidx.annotation.NonNull;
-
-import java.util.ArrayList;
 
 public class Detection {
     private RectF rect;

@@ -4,17 +4,17 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.firebase.FirebaseApp;
-import com.gor2.curlingtomorrow.ui.CameraActivity;
-import com.gor2.curlingtomorrow.ui.ManualFrag;
-import com.gor2.curlingtomorrow.ui.ResultsFrag;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.FirebaseApp;
+import com.gor2.curlingtomorrow.ui.CameraActivity;
+import com.gor2.curlingtomorrow.ui.ManualFrag;
+import com.gor2.curlingtomorrow.ui.ResultsFrag;
 
 public class MainActivity extends AppCompatActivity{
 

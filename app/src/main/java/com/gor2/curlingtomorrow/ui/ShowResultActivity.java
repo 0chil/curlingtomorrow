@@ -1,14 +1,8 @@
 package com.gor2.curlingtomorrow.ui;
 
-import android.app.AlarmManager;
-import android.app.Application;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -21,7 +15,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.gor2.curlingtomorrow.Curlingtomorrow;
-import com.gor2.curlingtomorrow.MainActivity;
 import com.gor2.curlingtomorrow.R;
 import com.gor2.curlingtomorrow.SplashActivity;
 import com.gor2.curlingtomorrow.dataclass.Result;
@@ -33,7 +26,6 @@ import com.kakao.message.template.FeedTemplate;
 import com.kakao.message.template.LinkObject;
 import com.kakao.message.template.SocialObject;
 import com.kakao.message.template.TemplateParams;
-import com.kakao.message.template.TextTemplate;
 import com.kakao.network.ErrorResult;
 import com.kakao.network.callback.ResponseCallback;
 import com.kakao.network.storage.ImageUploadResponse;
