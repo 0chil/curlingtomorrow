@@ -431,7 +431,7 @@ public class CameraActivity extends AppCompatActivity implements ActivityCompat.
                         showDialogForPermission("카메라를 사용하려면 권한이 필요합니다");
                     else
                     {
-                        initSurfaceView();
+                        finish();
                     }
                 }
                 break;
