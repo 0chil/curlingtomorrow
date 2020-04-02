@@ -17,7 +17,16 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".ui.PreviewActivity" />
-        <activity android:name=".ui.ShowResultActivity" />
+        <activity android:name=".ui.ShowResultActivity">
+            <intent-filter>
+
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="kakaob0082583392318e989f91665bc49e630"
+                    android:host="kakaolink" />
+            </intent-filter>
+        </activity>
         <activity android:name=".NoticeActivity" />
         <activity android:name=".ui.CameraActivity" />
         <activity
@@ -25,13 +34,16 @@
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name" />
+
+        <meta-data
+            android:name="com.kakao.sdk.AppKey"
+            android:value="b0082583392318e989f91665bc49e630" />
     </application>
 
 </manifest>

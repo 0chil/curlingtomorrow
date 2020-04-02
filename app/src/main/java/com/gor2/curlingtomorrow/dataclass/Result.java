@@ -38,6 +38,10 @@ public class Result {
         );
     }
 
+    public Boolean isRedWinner(){
+        return getPlayerRedScore() > getPlayerYellowScore();
+    }
+
     public String getDateTime() {
         return dateTime;
     }

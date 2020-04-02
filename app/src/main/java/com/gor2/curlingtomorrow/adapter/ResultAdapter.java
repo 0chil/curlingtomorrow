@@ -1,5 +1,6 @@
 package com.gor2.curlingtomorrow.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -11,10 +12,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.gor2.curlingtomorrow.MainActivity;
 import com.gor2.curlingtomorrow.R;
 import com.gor2.curlingtomorrow.dataclass.Result;
+import com.gor2.curlingtomorrow.ui.ResultsFrag;
 import com.gor2.curlingtomorrow.ui.ShowResultActivity;
 
 import java.util.ArrayList;
@@ -22,6 +27,7 @@ import java.util.ArrayList;
 public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.ViewHolder> {
 
     ArrayList<Result> results;
+    Context context;
 
     public class ViewHolder extends RecyclerView.ViewHolder{
         TextView txtDate, txtPlayerRed, txtRedScore, txtPlayerYellow, txtYellowScore, txtRedWin, txtYellowWin;
@@ -44,15 +50,16 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.ViewHolder
                     int index = getAdapterPosition();
                     Intent intent = new Intent(v.getContext(), ShowResultActivity.class);
                     intent.putExtra("index",index);
-                    v.getContext().startActivity(intent);
+                    ((Activity)context).startActivityForResult(intent,MainActivity.REQUESTCODE);
                 }
             });
         }
     }
 
-    public ResultAdapter(ArrayList<Result> results) {
+    public ResultAdapter(ArrayList<Result> results, Context context) {
         super();
         this.results = results;
+        this.context = context;
     }
 
     @NonNull

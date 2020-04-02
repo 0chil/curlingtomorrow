@@ -34,7 +34,7 @@ public class ResultsFrag extends Fragment {
         RecyclerView recyclerView = root.findViewById(R.id.recycler_results);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        resultAdapter = new ResultAdapter(results);
+        resultAdapter = new ResultAdapter(results,getActivity());
         recyclerView.setAdapter(resultAdapter);
 
         Refresh();

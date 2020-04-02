@@ -21,7 +21,7 @@ android {
         }
     }
     aaptOptions {
-        noCompress "tflite"  // Your model's file extension: "tflite", "lite", etc.
+        noCompress "tflite"
     }
 
 }
@@ -40,6 +40,7 @@ dependencies {
     implementation 'androidx.navigation:navigation-ui:2.0.0'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation group: 'com.kakao.sdk', name: 'kakaolink', version: '1.27.0'
 
 //    compile 'com.facebook.stetho:stetho:1.5.1'
     testImplementation 'junit:junit:4.12'
