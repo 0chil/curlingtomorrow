@@ -166,7 +166,7 @@ public class PreviewActivity extends AppCompatActivity{
                 yellowScore = sameCount;
             }
             txtScore.setText(String.format("%d:%d",redScore,yellowScore));
-            result = new Result(formatDate,txtPlayerRed.getText().toString(),txtPlayerYellow.getText().toString(),redScore,yellowScore,"");
+            result = new Result(formatDate,"","",redScore,yellowScore,"");
         }else{
             //No detections Found
             Toast toast = Toast.makeText(this,"스톤이 인식되지 않았습니다\n다시 촬영해주세요",Toast.LENGTH_SHORT);
@@ -299,6 +299,8 @@ public class PreviewActivity extends AppCompatActivity{
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             result.setImagePath(URL);
+            result.setPlayerRedName(txtPlayerRed.getText().toString());
+            result.setPlayerYellowName(txtPlayerYellow.getText().toString());
             ((Curlingtomorrow) getApplication()).AddResult(result);
             setResult(RESULT_OK);
             finish();

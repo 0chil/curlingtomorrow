@@ -1,6 +1,7 @@
 package com.gor2.curlingtomorrow.ui;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,7 +31,7 @@ public class ResultsFrag extends Fragment {
 
         resultAdapter = new ResultAdapter(results);
         recyclerView.setAdapter(resultAdapter);
-
+        
         Refresh();
         return root;
     }

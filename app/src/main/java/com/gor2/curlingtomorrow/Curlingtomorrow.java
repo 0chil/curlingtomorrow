@@ -1,6 +1,7 @@
 package com.gor2.curlingtomorrow;
 
 import android.app.Application;
+import android.util.Log;
 
 import com.gor2.curlingtomorrow.dataclass.Result;
 

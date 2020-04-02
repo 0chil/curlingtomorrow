@@ -40,15 +40,15 @@ public class Result {
     }
 
     public void setPlayerRedName(String playerRedName) {
-        playerRedName = playerRedName;
+        this.playerRedName = playerRedName;
     }
 
-    public void setPlayerRedScore(String playerRedScore) {
-        playerRedScore = playerRedScore;
+    public void setPlayerRedScore(int playerRedScore) {
+        this.playerRedScore = playerRedScore;
     }
 
-    public void setPlayerYellowName(String playerYellowName) { playerYellowName = playerYellowName; }
+    public void setPlayerYellowName(String playerYellowName) { this.playerYellowName = playerYellowName; }
 
-    public void setPlayerYellowScore(String playerYellowScore) { playerYellowScore = playerYellowScore; }
+    public void setPlayerYellowScore(int playerYellowScore) { this.playerYellowScore = playerYellowScore; }
 }
 
