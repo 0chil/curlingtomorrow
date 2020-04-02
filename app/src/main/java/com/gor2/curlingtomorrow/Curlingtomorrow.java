@@ -2,7 +2,7 @@ package com.gor2.curlingtomorrow;
 
 import android.app.Application;
 
-import com.gor2.curlingtomorrow.result.Result;
+import com.gor2.curlingtomorrow.dataclass.Result;
 
 import java.util.ArrayList;
 

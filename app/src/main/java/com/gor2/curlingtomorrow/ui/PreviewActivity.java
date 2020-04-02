@@ -1,10 +1,8 @@
 package com.gor2.curlingtomorrow.ui;
 
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.PixelFormat;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import android.graphics.drawable.ColorDrawable;
@@ -12,9 +10,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.SurfaceView;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -40,8 +36,8 @@ import com.gor2.curlingtomorrow.Curlingtomorrow;
 import com.gor2.curlingtomorrow.DialogSave;
 import com.gor2.curlingtomorrow.R;
 import com.gor2.curlingtomorrow.camera.DrawDetectionsOnTop;
-import com.gor2.curlingtomorrow.detection.Detection;
-import com.gor2.curlingtomorrow.result.Result;
+import com.gor2.curlingtomorrow.dataclass.Detection;
+import com.gor2.curlingtomorrow.dataclass.Result;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -78,12 +74,21 @@ public class PreviewActivity extends AppCompatActivity{
 
         setContentView(R.layout.activity_preview);
 
+        //FrameLayout
+        frameLayout = findViewById(R.id.frameLayout);
+
+        //TextViews
+        txtScore = findViewById(R.id.txtScore);
+        txtPlayerRed = findViewById(R.id.txtPlayerRed);
+        txtPlayerYellow = findViewById(R.id.txtPlayerYellow);
+
         //Save & Retry Button
         btnSave = findViewById(R.id.btnSave);
         btnRetry = findViewById(R.id.btnRetry);
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(txtPlayerRed.getText().toString().isEmpty() || txtPlayerYellow.getText().toString().isEmpty()) return;
                 SaveImageAndResult();
             }
         });
@@ -95,14 +100,6 @@ public class PreviewActivity extends AppCompatActivity{
                 finish();
             }
         });
-
-        //FrameLayout
-        frameLayout = findViewById(R.id.frameLayout);
-
-        //TextViews
-        txtScore = findViewById(R.id.txtScore);
-        txtPlayerRed = findViewById(R.id.txtPlayerRed);
-        txtPlayerYellow = findViewById(R.id.txtPlayerYellow);
 
         //ML Kit Initialize
         try { InitMLKit(); } catch (FirebaseMLException e) { e.printStackTrace(); }
@@ -128,7 +125,7 @@ public class PreviewActivity extends AppCompatActivity{
             // Current Timestamp
             long now = System.currentTimeMillis();
             Date date = new Date(now);
-            SimpleDateFormat sdfNow = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+            SimpleDateFormat sdfNow = new SimpleDateFormat("yyyy년 MM월 dd일");
             String formatDate = sdfNow.format(date);
 
 

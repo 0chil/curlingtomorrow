@@ -9,24 +9,22 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.gor2.curlingtomorrow.Curlingtomorrow;
 import com.gor2.curlingtomorrow.R;
-import com.gor2.curlingtomorrow.result.Result;
+import com.gor2.curlingtomorrow.dataclass.Result;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.ViewHolder> {
 
     private ArrayList<Result> results;
 
     public class ViewHolder extends RecyclerView.ViewHolder{
-        TextView txtDate, txtPlayerRed, txtRedScore, txtPlayerYelow, txtYellowScore;
+        TextView txtDate, txtPlayerRed, txtRedScore, txtPlayerYellow, txtYellowScore;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             txtDate = itemView.findViewById(R.id.txtDate);
             txtPlayerRed = itemView.findViewById(R.id.txtPlayerRed_item);
-            txtPlayerYelow = itemView.findViewById(R.id.txtPlayerYellow_item);
+            txtPlayerYellow = itemView.findViewById(R.id.txtPlayerYellow_item);
             txtRedScore = itemView.findViewById(R.id.txtRedScore_item);
             txtYellowScore = itemView.findViewById(R.id.txtYellowScore_item);
         }
@@ -53,9 +51,9 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.ViewHolder
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.txtDate.setText(results.get(position).getDateTime());
         holder.txtPlayerRed.setText(results.get(position).getPlayerRedName());
-        holder.txtRedScore.setText(results.get(position).getPlayerRedScore());
-        holder.txtPlayerYelow.setText(results.get(position).getPlayerYellowName());
-        holder.txtYellowScore.setText(results.get(position).getPlayerYellowScore());
+        holder.txtRedScore.setText(String.valueOf(results.get(position).getPlayerRedScore()));
+        holder.txtPlayerYellow.setText(results.get(position).getPlayerYellowName());
+        holder.txtYellowScore.setText(String.valueOf(results.get(position).getPlayerYellowScore()));
     }
 
     @Override

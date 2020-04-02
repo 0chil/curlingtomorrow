@@ -1,4 +1,4 @@
-package com.gor2.curlingtomorrow.result;
+package com.gor2.curlingtomorrow.dataclass;
 
 public class Result {
     private String dateTime,playerRedName,playerYellowName,imagePath;
