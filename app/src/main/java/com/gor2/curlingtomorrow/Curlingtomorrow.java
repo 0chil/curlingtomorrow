@@ -6,7 +6,9 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
+import android.database.sqlite.SQLiteBindOrColumnIndexOutOfRangeException;
 import android.preference.PreferenceManager;
+import android.text.BoringLayout;
 import android.util.Base64;
 import android.util.Log;
 
@@ -24,6 +26,7 @@ import static com.kakao.util.helper.Utility.getPackageInfo;
 public class Curlingtomorrow extends Application {
     ArrayList<Result> results = new ArrayList<>();
     final String PREF_KEY="CURLING_RESULT";
+    public static Boolean isLoaded = false;
 
     @Override
     public void onCreate() {
@@ -61,6 +64,7 @@ public class Curlingtomorrow extends Application {
 
     public void LoadResult(){
         results = getStringArrayPref(this,PREF_KEY);
+        isLoaded = true;
     }
 
     public void AddResult(Result result){

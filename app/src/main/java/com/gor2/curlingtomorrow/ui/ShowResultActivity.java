@@ -1,7 +1,11 @@
 package com.gor2.curlingtomorrow.ui;
 
+import android.app.AlarmManager;
 import android.app.Application;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -47,17 +51,21 @@ public class ShowResultActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
-//        Get index
-        final int index = getIntent().getIntExtra("index",-1);
-
-//        Prevent ShowResult From being opened without result
         Intent intent = getIntent();
-        if (Intent.ACTION_VIEW.equals(intent.getAction()) && index == -1) {
-            Intent intentTemp = new Intent(this, SplashActivity.class);
-            startActivity(intentTemp);
-            Uri uri = intent.getData();
-            finish();
+//        Get index
+        final int index = intent.getIntExtra("index",-1);
+//        if(index == -1) doRestart(this.getApplicationContext());
+
+//         Process scheme
+        //kakao~~~://kakaolink
+        if (Intent.ACTION_VIEW.equals(intent.getAction())) {
+            if(Curlingtomorrow.isLoaded){
+                finish();
+            }
+            else{
+                startActivity(new Intent(this,SplashActivity.class));
+                finish();
+            }
             return;
         }
 
@@ -176,10 +184,7 @@ public class ShowResultActivity extends AppCompatActivity{
                                         )
                                         .build())
                                 .setSocial(SocialObject.newBuilder()
-                                        .setLikeCount(10)
-                                        .setCommentCount(20)
-                                        .setSharedCount(30)
-                                        .setViewCount(40)
+                                        .setLikeCount(9999)
                                         .build())
                                 .addButton(new ButtonObject(
                                         "크게보기",
@@ -187,17 +192,11 @@ public class ShowResultActivity extends AppCompatActivity{
                                                 .setWebUrl(result.getOriginal().getUrl())
                                                 .setMobileWebUrl(result.getOriginal().getUrl())
                                                 .build()))
-                                .addButton(new ButtonObject(
-                                        "게임하기",
-                                        LinkObject.newBuilder()
-                                                .setAndroidExecutionParams("")
-                                                .setIosExecutionParams("")
-                                                .build()))
                                 .build();
 
                         //Send via Kakaotalk
                         KakaoLinkService.getInstance()
-                                .sendDefault(ShowResultActivity.this, params, new ResponseCallback<KakaoLinkResponse>() {
+                                .sendDefault(ShowResultActivity.this.getApplicationContext(), params, new ResponseCallback<KakaoLinkResponse>() {
                                     @Override
                                     public void onFailure(ErrorResult errorResult) {
 
@@ -210,8 +209,5 @@ public class ShowResultActivity extends AppCompatActivity{
                                 });
                     }
                 });
-
-
-
     }
 }
