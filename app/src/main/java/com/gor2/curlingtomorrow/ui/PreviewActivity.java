@@ -8,6 +8,7 @@ import android.graphics.PixelFormat;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import android.graphics.drawable.ColorDrawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -43,6 +44,8 @@ import com.gor2.curlingtomorrow.detection.Detection;
 import com.gor2.curlingtomorrow.result.Result;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.text.SimpleDateFormat;
@@ -82,8 +85,6 @@ public class PreviewActivity extends AppCompatActivity{
             @Override
             public void onClick(View v) {
                 SaveImageAndResult();
-                setResult(RESULT_OK);
-                finish();
             }
         });
 
@@ -117,8 +118,7 @@ public class PreviewActivity extends AppCompatActivity{
 
     private void SaveImageAndResult(){
         if(result == null){ Toast.makeText(this,"스톤이 인식되지 않았습니다",Toast.LENGTH_SHORT); return; }
-
-        ( (Curlingtomorrow) getApplication() ).AddResult(result);
+        new SaveImageTask().execute(GetBitmapFromInternal());
     }
 
     private void AfterDetection(ArrayList<Detection> detections){
@@ -279,6 +279,47 @@ public class PreviewActivity extends AppCompatActivity{
                                 e.printStackTrace();
                             }
                         });
+    }
+    private String SaveBitmapToJpegInternalTemp(Bitmap bitmap, String fileName){
+        File storage = getFilesDir();
+        File tempFile = new File(storage, fileName);
+        String result = tempFile.getAbsolutePath();
+        try{
+            tempFile.createNewFile();
+            FileOutputStream out = new FileOutputStream(tempFile);
+            bitmap.compress(Bitmap.CompressFormat.JPEG,80,out);
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+
+    private class SaveImageTask extends AsyncTask<Bitmap, Void, Void> {
+        String URL;
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            result.setImagePath(URL);
+            ((Curlingtomorrow) getApplication()).AddResult(result);
+            setResult(RESULT_OK);
+            finish();
+        }
+
+        @Override
+        protected Void doInBackground(Bitmap... data) {
+
+            Bitmap bitmap = null;
+            try {
+                bitmap = data[0];
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            URL = SaveBitmapToJpegInternalTemp(bitmap,System.currentTimeMillis()+".jpg");
+            return null;
+        }
+
     }
 }
 
