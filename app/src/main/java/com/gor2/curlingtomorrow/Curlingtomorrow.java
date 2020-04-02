@@ -22,7 +22,7 @@ public class Curlingtomorrow extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        Stetho.initializeWithDefaults(this);
+//        Stetho.initializeWithDefaults(this);
     }
 
     public ArrayList<Result> GetResultsList(){
