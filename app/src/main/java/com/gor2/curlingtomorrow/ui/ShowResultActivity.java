@@ -1,8 +1,6 @@
 package com.gor2.curlingtomorrow.ui;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -13,6 +11,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.gor2.curlingtomorrow.Curlingtomorrow;
 import com.gor2.curlingtomorrow.R;
@@ -110,7 +109,9 @@ public class ShowResultActivity extends AppCompatActivity{
 
         //Read Temp.jpg
         imgTaken = findViewById(R.id.imgTaken_showresult);
-        imgTaken.setImageBitmap(GetBitmapFromInternal());
+        Glide.with(this)
+                .load(GetImageFileFromInternal())
+                .into(imgTaken);
 
         //Set Name, Score
         txtPlayerRed.setText(result.getPlayerRedName());
@@ -119,10 +120,10 @@ public class ShowResultActivity extends AppCompatActivity{
         txtScore.setText(scoreText);
     }
 
-    private Bitmap GetBitmapFromInternal(){
+    private File GetImageFileFromInternal(){
         File storage = getFilesDir();
         File tempFile = new File(storage,result.getImageFileName());
-        return BitmapFactory.decodeFile(tempFile.getAbsolutePath());
+        return tempFile;
     }
 
     private String GetImagePathFromInternal(){

@@ -1,11 +1,11 @@
 package com.gor2.curlingtomorrow.ui;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,8 +19,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -84,13 +88,7 @@ public class PreviewActivity extends AppCompatActivity{
         //Save & Retry Button
         btnSave = findViewById(R.id.btnSave);
         btnRetry = findViewById(R.id.btnRetry);
-        btnSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(txtPlayerRed.getText().toString().isEmpty() || txtPlayerYellow.getText().toString().isEmpty()) return;
-                SaveImageAndResult();
-            }
-        });
+
 
         btnRetry.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,16 +103,37 @@ public class PreviewActivity extends AppCompatActivity{
 
         //Read Temp.jpg
         imgTaken = findViewById(R.id.imgTaken);
-        imgTaken.setImageBitmap(GetBitmapFromInternal());
+        Glide.with(this).asBitmap()
+                .load(GetFileFromInternal())
+                .into(new CustomTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(@NonNull final Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                        //Inference
+                        try { InferenceLocation(resource,imgTaken); } catch (FirebaseMLException e) { e.printStackTrace(); }
 
-        //Inference
-        try { InferenceLocation(GetBitmapFromInternal(),imgTaken); } catch (FirebaseMLException e) { e.printStackTrace(); }
+                        btnSave.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if(txtPlayerRed.getText().toString().isEmpty() || txtPlayerYellow.getText().toString().isEmpty()) return;
+                                SaveImageAndResult(resource);
+                            }
+                        });
+
+                        imgTaken.setImageBitmap(resource);
+                    }
+
+                    @Override
+                    public void onLoadCleared(@Nullable Drawable placeholder) {
+
+                    }
+                });
+
 
     }
 
-    private void SaveImageAndResult(){
+    private void SaveImageAndResult(Bitmap bitmap){
         if(result == null){ Toast.makeText(this,"스톤이 인식되지 않았습니다",Toast.LENGTH_SHORT).show(); return; }
-        new SaveImageTask().execute(GetBitmapFromInternal());
+        new SaveImageTask().execute(bitmap);
     }
 
     private void AfterDetection(ArrayList<Detection> detections){
@@ -180,10 +199,8 @@ public class PreviewActivity extends AppCompatActivity{
         return center.length(stone.x,stone.y);
     }
 
-    private Bitmap GetBitmapFromInternal(){
-        File storage = getFilesDir();
-        File tempFile = new File(storage,"temp.jpg");
-        return BitmapFactory.decodeFile(tempFile.getAbsolutePath());
+    private File GetFileFromInternal(){
+        return new File(getFilesDir(),"temp.png");
     }
 
     FirebaseModelInterpreter interpreter;

@@ -40,5 +40,12 @@ public class DialogSave extends Dialog{
                 dismiss();
             }
         });
+        Button btnReset = findViewById(R.id.btnReset);
+        btnReset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+            }
+        });
     }
 }

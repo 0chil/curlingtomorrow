@@ -80,11 +80,26 @@
             android:textSize="30sp" />
     </LinearLayout>
 
-    <Button
-        android:id="@+id/btnSet"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="확인"
-        android:textColor="#000000" />
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnSet"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="확인"
+            android:textColor="#000000" />
+
+        <Button
+            android:id="@+id/btnReset"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="취소"
+            android:textColor="#000000" />
+    </LinearLayout>
 
 </LinearLayout>
