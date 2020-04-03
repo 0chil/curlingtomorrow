@@ -49,7 +49,7 @@ public class DrawDetectionsOnTop extends View {
 
             paint.setColor(detection.getClassNumber()==0?Color.RED:Color.YELLOW);
 
-            canvas.drawText(detection.getClassNumber()==0?"RED":"YELLOW",rect.right,rect.top,paint);
+            //canvas.drawText(detection.getClassNumber()==0?"RED":"YELLOW",rect.right,rect.top,paint);
             canvas.drawRect(rect,paint);
 
             canvas.drawCircle(detection.getCenter().x,detection.getCenter().y,10,paint);

@@ -3,6 +3,7 @@ package com.gor2.curlingtomorrow;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,6 +22,7 @@ public class MainActivity extends AppCompatActivity{
     BottomNavigationView navView;
     Fragment manualFrag, resultsFrag;
     public final static int REQUESTCODE = 400;
+    private long backBtnTime = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         final FragmentManager fm = getSupportFragmentManager();
@@ -68,6 +70,16 @@ public class MainActivity extends AppCompatActivity{
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        long curTime = System.currentTimeMillis();
+        long gapTime = curTime - backBtnTime;
+
+        if(0 <= gapTime && 2000 >= gapTime) {
+            finishAndRemoveTask();
+            android.os.Process.killProcess(android.os.Process.myPid());
+        }
+        else {
+            backBtnTime = curTime;
+            Toast.makeText(this, "한번 더 누르면 종료됩니다", Toast.LENGTH_SHORT).show();
+        }
     }
 }
