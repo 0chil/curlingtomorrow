@@ -5,26 +5,16 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Matrix;
 import android.graphics.Point;
-import android.hardware.Sensor;
-import android.hardware.SensorManager;
-import android.hardware.camera2.CameraCaptureSession;
-import android.hardware.camera2.CameraDevice;
-import android.hardware.camera2.CaptureRequest;
 import android.media.ExifInterface;
-import android.media.ImageReader;
 import android.os.Bundle;
-import android.os.Handler;
-import android.util.Log;
 import android.util.Rational;
 import android.util.Size;
 import android.util.SparseIntArray;
 import android.view.Surface;
-import android.view.SurfaceHolder;
 import android.view.TextureView;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.LinearLayout;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -41,7 +31,7 @@ import androidx.lifecycle.LifecycleOwner;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.gor2.curlingtomorrow.R;
-import com.gor2.curlingtomorrow.camera.DeviceOrientation;
+import com.gor2.curlingtomorrow.camera.DrawGuideLineOnTop;
 
 import java.io.File;
 
@@ -49,18 +39,7 @@ import java.io.File;
 public class CameraActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback{
 
     private TextureView textureView;
-    private SurfaceHolder mSurfaceViewHolder;
-    private Handler mHandler;
-    private ImageReader mImageReader;
-    private CameraDevice mCameraDevice;
-    private CaptureRequest.Builder mPreviewBuilder;
-    private CameraCaptureSession mSession;
-    private int mDeviceRotation;
-    private Sensor mAccelerometer;
-    private Sensor mMagnetometer;
-    private SensorManager mSensorManager;
-    private DeviceOrientation deviceOrientation;
-    int mDSI_height, mDSI_width;
+    private FrameLayout textureViewHolder;
 
     private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
     static {
@@ -91,10 +70,7 @@ public class CameraActivity extends AppCompatActivity implements ActivityCompat.
 
         FloatingActionButton button = findViewById(R.id.button);
         textureView = findViewById(R.id.preview);
-        mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        mMagnetometer = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
-        deviceOrientation = new DeviceOrientation();
+        textureViewHolder = findViewById(R.id.textureViewHolder);
 
         //권한
         if (!hasPermissions(PERMISSIONS)) {
@@ -105,31 +81,6 @@ public class CameraActivity extends AppCompatActivity implements ActivityCompat.
     }
 
     //Camera Functions
-
-    // 출처 https://stackoverflow.com/a/43516672
-    private void setAspectRatioTextureView(int ResolutionWidth , int ResolutionHeight )
-    {
-        if(ResolutionWidth > ResolutionHeight){
-            int newWidth = mDSI_width;
-            int newHeight = ((mDSI_width * ResolutionWidth)/ResolutionHeight);
-            updateTextureViewSize(newWidth,newHeight);
-            Log.e("setRatio",newWidth+"/"+newHeight);
-
-        }else {
-            int newWidth = mDSI_width;
-            int newHeight = ((mDSI_width * ResolutionHeight)/ResolutionWidth);
-            updateTextureViewSize(newWidth,newHeight);
-            Log.e("setRatio",newWidth+"/"+newHeight);
-        }
-
-    }
-
-
-    private void updateTextureViewSize(int viewWidth, int viewHeight) {
-//        Log.d("@@@", "TextureView Width : " + viewWidth + " TextureView Height : " + viewHeight);
-        textureView.setLayoutParams(new LinearLayout.LayoutParams(viewWidth, viewHeight));
-    }
-
 
     private void startCamera() {
 
@@ -153,11 +104,10 @@ public class CameraActivity extends AppCompatActivity implements ActivityCompat.
                 new Preview.OnPreviewOutputUpdateListener() {
                     @Override
                     public void onUpdated(Preview.PreviewOutput output){
-                        ViewGroup parent = (ViewGroup) textureView.getParent();
-                        parent.removeView(textureView);
-                        parent.addView(textureView, 0);
                         textureView.setSurfaceTexture(output.getSurfaceTexture());
                         updateTransform();
+                        DrawGuideLineOnTop drawGuideLineOnTop = new DrawGuideLineOnTop(CameraActivity.this,textureView);
+                        textureViewHolder.addView(drawGuideLineOnTop);
                     }
                 });
 

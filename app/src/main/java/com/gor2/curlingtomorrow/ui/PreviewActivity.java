@@ -23,6 +23,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -104,6 +105,8 @@ public class PreviewActivity extends AppCompatActivity{
         //Read Temp.jpg
         imgTaken = findViewById(R.id.imgTaken);
         Glide.with(this).asBitmap()
+                .skipMemoryCache(true)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .load(GetFileFromInternal())
                 .into(new CustomTarget<Bitmap>() {
                     @Override
@@ -114,7 +117,7 @@ public class PreviewActivity extends AppCompatActivity{
                         btnSave.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                if(txtPlayerRed.getText().toString().isEmpty() || txtPlayerYellow.getText().toString().isEmpty()) return;
+                                if(txtPlayerRed.getText().toString().isEmpty() || txtPlayerYellow.getText().toString().isEmpty()) {OpenSaveDialog(); return;}
                                 SaveImageAndResult(resource);
                             }
                         });
@@ -148,10 +151,7 @@ public class PreviewActivity extends AppCompatActivity{
 
 
             //Show Dialog for Player Name
-            DialogSave dialogSave = new DialogSave(PreviewActivity.this);
-            dialogSave.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            dialogSave.setCancelable(false);
-            dialogSave.show();
+            OpenSaveDialog();
 
             //Draw Detection Boxes
             DrawDetectionsOnTop overlayDrawer = new DrawDetectionsOnTop(PreviewActivity.this, detections, frameLayout);
@@ -192,6 +192,13 @@ public class PreviewActivity extends AppCompatActivity{
             toast.show();
             txtScore.setText("-");
         }
+    }
+
+    private void OpenSaveDialog(){
+        DialogSave dialogSave = new DialogSave(PreviewActivity.this);
+        dialogSave.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialogSave.setCancelable(false);
+        dialogSave.show();
     }
 
     private Float GetDistanceFromCenter(PointF stone){

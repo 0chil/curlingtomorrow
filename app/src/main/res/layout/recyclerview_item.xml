@@ -7,13 +7,14 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:weightSum="9">
 
         <TextView
             android:id="@+id/txtDate"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="70dp"
-            android:layout_weight="1"
+            android:layout_weight="3"
             android:gravity="center"
             android:text="TextView"
             android:textColor="#000000"
@@ -21,10 +22,13 @@
 
         <TextView
             android:id="@+id/txtPlayerRed_item"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="70dp"
-            android:layout_weight="1"
+            android:layout_weight="2"
+            android:autoText="false"
+            android:ellipsize="end"
             android:gravity="center"
+            android:maxLines="1"
             android:text="TextView"
             android:textColor="#000000"
             android:textSize="18sp"
@@ -32,7 +36,7 @@
 
         <LinearLayout
             android:id="@+id/layoutRedScore"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
@@ -42,7 +46,6 @@
                 android:id="@+id/txtRedWin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:gravity="bottom|center_horizontal"
                 android:text="승리"
                 android:textColor="#000000"
@@ -53,9 +56,8 @@
                 android:id="@+id/txtRedScore_item"
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
-                android:layout_weight="1"
                 android:gravity="start|center_horizontal"
-                android:text="TextView"
+                android:text="0"
                 android:textColor="#000000"
                 android:textSize="22sp"
                 android:textStyle="bold" />
@@ -63,7 +65,7 @@
 
         <LinearLayout
             android:id="@+id/layoutYellowScore"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
@@ -73,7 +75,6 @@
                 android:id="@+id/txtYellowWin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:gravity="bottom|center_horizontal"
                 android:text="승리"
                 android:textColor="#000000"
@@ -84,9 +85,8 @@
                 android:id="@+id/txtYellowScore_item"
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
-                android:layout_weight="1"
                 android:gravity="start|center_horizontal"
-                android:text="TextView"
+                android:text="0"
                 android:textColor="#000000"
                 android:textSize="22sp"
                 android:textStyle="bold" />
@@ -94,10 +94,12 @@
 
         <TextView
             android:id="@+id/txtPlayerYellow_item"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="70dp"
-            android:layout_weight="1"
+            android:layout_weight="2"
+            android:ellipsize="end"
             android:gravity="center"
+            android:maxLines="1"
             android:text="TextView"
             android:textColor="#000000"
             android:textSize="18sp"
