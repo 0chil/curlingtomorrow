@@ -6,21 +6,12 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:orientation="vertical"
-    android:paddingTop="40dp"
     tools:context=".ui.CameraActivity">
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:text="표적지를 가이드라인에 맞춰주세요"
-        android:textAlignment="center"
-        android:textSize="20dp" />
 
     <SurfaceView
         android:id="@+id/preview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_weight="1" />
 
     <LinearLayout

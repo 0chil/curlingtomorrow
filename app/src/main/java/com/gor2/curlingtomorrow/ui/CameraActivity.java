@@ -130,7 +130,7 @@ public class CameraActivity extends AppCompatActivity implements ActivityCompat.
     @Override
     protected void onResume() {
         super.onResume();
-
+        initSurfaceView();
         mSensorManager.registerListener(deviceOrientation.getEventListener(), mAccelerometer, SensorManager.SENSOR_DELAY_UI);
         mSensorManager.registerListener(deviceOrientation.getEventListener(), mMagnetometer, SensorManager.SENSOR_DELAY_UI);
     }
@@ -210,7 +210,7 @@ public class CameraActivity extends AppCompatActivity implements ActivityCompat.
     private ImageReader.OnImageAvailableListener mOnImageAvailableListener = new ImageReader.OnImageAvailableListener() {
         @Override
         public void onImageAvailable(ImageReader reader) {
-
+            Log.e("Camera","image available");
             Image image = reader.acquireNextImage();
             ByteBuffer buffer = image.getPlanes()[0].getBuffer();
             byte[] bytes = new byte[buffer.remaining()];
@@ -300,8 +300,9 @@ public class CameraActivity extends AppCompatActivity implements ActivityCompat.
 
 
     public void takePicture() {
-        if(mCameraDevice==null)return;
+        if(mCameraDevice==null) {Log.e("Camera","cameradevice null"); return; }
         try {
+            Log.e("Camera","cameradevice try");
             CaptureRequest.Builder captureRequestBuilder = mCameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE);
             captureRequestBuilder.addTarget(mImageReader.getSurface());
             captureRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
@@ -312,8 +313,8 @@ public class CameraActivity extends AppCompatActivity implements ActivityCompat.
 
             CaptureRequest mCaptureRequest = captureRequestBuilder.build();
             mSession.capture(mCaptureRequest, mSessionCaptureCallback, mHandler);
-            mCameraDevice.close();
-            mCameraDevice=null;
+
+            
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
