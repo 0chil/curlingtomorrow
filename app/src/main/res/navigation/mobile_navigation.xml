@@ -9,7 +9,7 @@
         android:id="@+id/navigation_manual"
         android:name="com.gor2.curlingtomorrow.ui.ManualFrag"
         android:label="manual"
-        tools:layout="@layout/activity_manual" >
+        tools:layout="@layout/fragment_manual" >
         <action
             android:id="@+id/action_navigation_manual_to_navigation_camera"
             app:destination="@id/navigation_camera" />
@@ -29,5 +29,5 @@
         android:id="@+id/navigation_results"
         android:name="com.gor2.curlingtomorrow.ui.ResultsFrag"
         android:label="results"
-        tools:layout="@layout/activity_results" />
+        tools:layout="@layout/fragment_results" />
 </navigation>

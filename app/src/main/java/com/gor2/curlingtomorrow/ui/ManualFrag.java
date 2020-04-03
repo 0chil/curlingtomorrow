@@ -16,7 +16,7 @@ public class ManualFrag extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.activity_manual, container, false);
+        View root = inflater.inflate(R.layout.fragment_manual, container, false);
         final TextView textView = root.findViewById(R.id.text_home);
         textView.setText("게임방법 표시");
         return root;

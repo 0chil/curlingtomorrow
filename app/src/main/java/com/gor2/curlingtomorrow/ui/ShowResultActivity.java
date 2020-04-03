@@ -99,7 +99,9 @@ public class ShowResultActivity extends AppCompatActivity{
             @Override
             public void onClick(View v) {
                 ((Curlingtomorrow)getApplication()).DeleteResult(index);
-                setResult(RESULT_OK);
+                Intent deletePositionIntent = new Intent();
+                deletePositionIntent.putExtra("deleteposition",index);
+                setResult(Curlingtomorrow.RESULT_DELETED,deletePositionIntent);
                 finish();
             }
         });

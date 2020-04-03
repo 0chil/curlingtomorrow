@@ -25,6 +25,7 @@ public class Curlingtomorrow extends Application {
     ArrayList<Result> results = new ArrayList<>();
     final String PREF_KEY="CURLING_RESULT";
     public static Boolean isLoaded = false;
+    public static final int RESULT_DELETED=-10;
 
     @Override
     public void onCreate() {
@@ -66,7 +67,7 @@ public class Curlingtomorrow extends Application {
     }
 
     public void AddResult(Result result){
-        results.add(result);
+        results.add(0,result);
         SaveResult();
     }
 

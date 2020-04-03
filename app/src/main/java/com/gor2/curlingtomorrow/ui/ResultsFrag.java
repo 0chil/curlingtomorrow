@@ -2,6 +2,7 @@ package com.gor2.curlingtomorrow.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +27,7 @@ public class ResultsFrag extends Fragment {
     ResultAdapter resultAdapter;
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.activity_results, container, false);
+        View root = inflater.inflate(R.layout.fragment_results, container, false);
 
         ArrayList<Result> results = ((Curlingtomorrow)container.getContext().getApplicationContext()).GetResultsList();
 
@@ -36,22 +37,32 @@ public class ResultsFrag extends Fragment {
         resultAdapter = new ResultAdapter(results,getActivity());
         recyclerView.setAdapter(resultAdapter);
 
-        Refresh();
+        RefreshInsertedFirst();
         return root;
     }
 
-    public void Refresh(){
+    public void RefreshInsertedFirst(){
         if(resultAdapter != null)
-            resultAdapter.notifyDataSetChanged();
+            resultAdapter.notifyItemInserted(0);
+    }
+
+    public void RefreshRemovedIndex(int index){
+        if(resultAdapter != null)
+            resultAdapter.notifyItemRemoved(index);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == MainActivity.REQUESTCODE){
             if(resultCode==RESULT_OK){
-                Refresh();
+                RefreshInsertedFirst();
+            }
+            else if(resultCode==Curlingtomorrow.RESULT_DELETED){
+                int position = data.getIntExtra("deleteposition",0);
+                Log.e("test","notify removed: "+position);
+                RefreshRemovedIndex(position);
             }
         }
     }
 }
+

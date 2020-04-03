@@ -72,7 +72,7 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.txtDate.setText(results.get(position).getDateTime());
-        if(results.get(position).getPlayerRedScore()>0){
+        if(results.get(position).isRedWinner()){
             holder.txtPlayerRed.setBackgroundColor(Color.parseColor("#fff287"));
             holder.layoutRedScore.setBackgroundColor(Color.parseColor("#fff287"));
             holder.txtYellowWin.setVisibility(View.INVISIBLE);
