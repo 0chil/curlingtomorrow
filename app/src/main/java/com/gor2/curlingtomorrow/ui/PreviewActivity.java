@@ -149,17 +149,13 @@ public class PreviewActivity extends AppCompatActivity{
             SimpleDateFormat sdfNow = new SimpleDateFormat("yyyy년 MM월 dd일");
             String formatDate = sdfNow.format(date);
 
-
             //Show Dialog for Player Name
             OpenSaveDialog();
 
-            //Draw Detection Boxes
-            DrawDetectionsOnTop overlayDrawer = new DrawDetectionsOnTop(PreviewActivity.this, detections, frameLayout);
-            frameLayout.addView(overlayDrawer, new LinearLayout.LayoutParams(imgTaken.getMeasuredWidth(), imgTaken.getMeasuredHeight()));
-
             //Calculate Distance
-            for(Detection detection : detections)
+            for(Detection detection : detections) {
                 detection.setDistance(GetDistanceFromCenter(detection.getCenter()));
+            }
 
             //Sort By Distance, Ascending
             detections.sort(new Ascending());
@@ -170,10 +166,12 @@ public class PreviewActivity extends AppCompatActivity{
             for(Detection detection : detections){
                 if(detection.getClassNumber() == firstStone)
                     sameCount++;
+                else
+                    break;
             }
 
             //Set Winner
-            if(firstStone == 0){
+            if(firstStone == Curlingtomorrow.redStoneClassNumber){
                 //Winner : Red
                 redScore = sameCount;
                 yellowScore = 0;
@@ -183,6 +181,12 @@ public class PreviewActivity extends AppCompatActivity{
                 redScore = 0;
                 yellowScore = sameCount;
             }
+
+
+            //Draw Detection Boxes
+            DrawDetectionsOnTop overlayDrawer = new DrawDetectionsOnTop(PreviewActivity.this, detections, frameLayout);
+            frameLayout.addView(overlayDrawer, new LinearLayout.LayoutParams(imgTaken.getMeasuredWidth(), imgTaken.getMeasuredHeight()));
+
             txtScore.setText(String.format("%d:%d",redScore,yellowScore));
             result = new Result(formatDate,"","",redScore,yellowScore,"");
         }else{
@@ -203,7 +207,7 @@ public class PreviewActivity extends AppCompatActivity{
 
     private Float GetDistanceFromCenter(PointF stone){
         PointF center = new PointF(0.5f,0.5f);
-        return center.length(stone.x,stone.y);
+        return (float)Math.hypot(center.x-stone.x,center.y-stone.y);
     }
 
     private File GetFileFromInternal(){
@@ -303,7 +307,6 @@ public class PreviewActivity extends AppCompatActivity{
     private String SaveBitmapToJpegInternalTemp(Bitmap bitmap, String fileName){
         File storage = getFilesDir();
         File tempFile = new File(storage, fileName);
-        String result = tempFile.getAbsolutePath();
         try{
             tempFile.createNewFile();
             FileOutputStream out = new FileOutputStream(tempFile);
@@ -348,6 +351,6 @@ public class PreviewActivity extends AppCompatActivity{
 class Ascending implements Comparator<Detection>{
     @Override
     public int compare(Detection o1, Detection o2) {
-        return o2.getDistance().compareTo(o1.getDistance());
+        return o1.getDistance().compareTo(o2.getDistance());
     }
 }

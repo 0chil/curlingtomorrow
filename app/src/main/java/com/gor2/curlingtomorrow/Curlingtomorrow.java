@@ -26,6 +26,8 @@ public class Curlingtomorrow extends Application {
     final String PREF_KEY="CURLING_RESULT";
     public static Boolean isLoaded = false;
     public static final int RESULT_DELETED=-10;
+    public static final int redStoneClassNumber = 1;
+    public static final int yellowStoneClassNumber = 0;
 
     @Override
     public void onCreate() {

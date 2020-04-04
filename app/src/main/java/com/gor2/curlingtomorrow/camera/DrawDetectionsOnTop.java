@@ -8,6 +8,7 @@ import android.graphics.RectF;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import com.gor2.curlingtomorrow.Curlingtomorrow;
 import com.gor2.curlingtomorrow.dataclass.Detection;
 
 import java.util.ArrayList;
@@ -47,9 +48,9 @@ public class DrawDetectionsOnTop extends View {
         for(Detection detection : detections) {
             RectF rect = detection.getRect();
 
-            paint.setColor(detection.getClassNumber()==0?Color.RED:Color.YELLOW);
+            paint.setColor(detection.getClassNumber()==Curlingtomorrow.redStoneClassNumber?Color.RED:Color.YELLOW);
 
-            //canvas.drawText(detection.getClassNumber()==0?"RED":"YELLOW",rect.right,rect.top,paint);
+            //canvas.drawText(detection.getClassNumber()==Curlingtomorrow.redStoneClassNumber?"RED":"YELLOW",rect.right,rect.top,paint);
             canvas.drawRect(rect,paint);
 
             canvas.drawCircle(detection.getCenter().x,detection.getCenter().y,10,paint);
