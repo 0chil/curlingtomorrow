@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#000000"
     android:gravity="center"
     android:orientation="vertical"
     tools:context=".ui.CameraActivity">
@@ -25,7 +26,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="5dp">
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/button"
@@ -35,10 +37,11 @@
             android:elevation="10dp"
             android:hapticFeedbackEnabled="true"
             android:soundEffectsEnabled="true"
-            app:backgroundTint="@color/colorPrimary"
+            app:backgroundTint="#999"
             app:fabCustomSize="80dp"
-            app:maxImageSize="50dp"
-            app:srcCompat="@drawable/ic_camera_black_24dp" />
+            app:maxImageSize="95dp"
+            app:srcCompat="@drawable/ic_fiber_manual_record_black_24dp"
+            app:tint="@color/white" />
     </LinearLayout>
 
 </LinearLayout>

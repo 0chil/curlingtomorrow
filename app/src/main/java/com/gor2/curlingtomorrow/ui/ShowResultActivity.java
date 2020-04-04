@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -12,7 +13,6 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.gor2.curlingtomorrow.Curlingtomorrow;
 import com.gor2.curlingtomorrow.R;
 import com.gor2.curlingtomorrow.SplashActivity;
@@ -33,7 +33,7 @@ import java.io.File;
 
 public class ShowResultActivity extends AppCompatActivity{
     ImageView imgTaken;
-    FloatingActionButton btnShare,btnDelete,btnList;
+    Button btnShare,btnDelete,btnList;
     FrameLayout frameLayout;
     public TextView txtScore, txtPlayerRed, txtPlayerYellow;
     public Result result;

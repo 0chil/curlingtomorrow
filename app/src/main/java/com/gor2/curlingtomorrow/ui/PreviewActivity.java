@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -55,8 +56,7 @@ import java.util.Date;
 
 public class PreviewActivity extends AppCompatActivity{
     ImageView imgTaken;
-    FloatingActionButton btnSave;
-    FloatingActionButton btnRetry;
+    Button btnSave,btnRetry;
     FrameLayout frameLayout;
     public TextView txtScore, txtPlayerRed, txtPlayerYellow;
     Result result;
